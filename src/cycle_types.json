@@ -1,0 +1,55 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Cycle Test",
+        "contact": {
+            "email": "ahl@oxide.computer"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "description": "This tests the handling of cyclic types. Prior to our fixes, rust codegen failed like this:\n```\nerror[E0072]: recursive type `CycleType` has infinite size\n  --> src/models/cycle_type.rs:15:1\n   |\n15 | pub struct CycleType {\n   | ^^^^^^^^^^^^^^^^^^^^ recursive type has infinite size\n16 |     #[serde(rename = \"other\", skip_serializing_if = \"Option: :is_none\")]\n17 |     pub other: Option<crate::models::OtherType>,\n   |                -------------------------------- recursive without indirection\n   |\nhelp: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to make `CycleType` representable\n   |\n17 |     pub other: Box<Option<crate::models::OtherType>>,\n   |                ^^^^                                ^\n\nerror[E0072]: recursive type `OtherType` has infinite size\n  --> src/models/other_type.rs:15:1\n   |\n15 | pub struct OtherType {\n   | ^^^^^^^^^^^^^^^^^^^^ recursive type has infinite size\n16 |     #[serde(rename = \"cycle\", skip_serializing_if = \"Option: :is_none\")]\n17 |     pub cycle: Option<crate::models::CycleType>,\n   |                -------------------------------- recursive without indirection\n   |\nhelp: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to make `OtherType` representable\n   |\n17 |     pub cycle: Box<Option<crate::models::CycleType>>,\n   |                ^^^^                                ^\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0072`.\nerror: could not compile `openapi`\n\nTo learn more, run the command again with --verbose.\n```",
+        "version": "1.0.0"
+    },
+    "tags": [],
+    "paths": {
+        "/thing": {
+            "get": {
+                "operationId": "get",
+                "responses": {
+                    "200": {
+                        "description": "get a thing",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CycleType"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CycleType": {
+                "type": "object",
+                "properties": {
+                    "other": {
+                        "$ref": "#/components/schemas/OtherType"
+                    }
+                }
+            },
+            "OtherType": {
+                "type": "object",
+                "properties": {
+                    "cycle": {
+                        "$ref": "#/components/schemas/CycleType"
+                    }
+                }
+            }
+        }
+    }
+}

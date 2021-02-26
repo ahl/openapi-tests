@@ -1,0 +1,56 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Enum Name Test",
+        "contact": {
+            "email": "ahl@oxide.computer"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "description": "This tests the handling of the names of enum fields with spaces. Prior to our fixes, rust codegen failed like this:\n```\n```",
+        "version": "1.0.0"
+    },
+    "tags": [],
+    "paths": {
+        "/thing": {
+            "get": {
+                "operationId": "get",
+                "responses": {
+                    "200": {
+                        "description": "get a thing",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Error": {
+                "properties": {
+                    "code": {
+                        "description": "Code is the machine-readable error code.",
+                        "readOnly": true,
+                        "type": "string",
+                        "enum": [
+                            "internal error",
+                            "not found",
+                            "invalid"
+                        ]
+                    }
+                },
+                "required": [
+                    "code"
+                ]
+            }
+        }
+    }
+}

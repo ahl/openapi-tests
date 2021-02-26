@@ -1,0 +1,43 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "File Test",
+        "contact": {
+            "email": "ahl@oxide.computer"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "description": "This tests the handling of a type named `File`. Prior to our fixes, rust codegen failed like this:\n```\nerror[E0412]: cannot find type `File` in this scope\n  --> src/apis/default_api.rs:36:46\n   |\n36 |     fn get(&self, ) -> Box<dyn Future<Item = File, Error = Error<serde_json::Value>>>;\n   |                                              ^^^^ not found in this scope\n   |\nhelp: consider importing this struct\n   |\n11 | use std::fs::File;\n   |\n\nerror[E0412]: cannot find type `File` in this scope\n  --> src/apis/default_api.rs:40:46\n   |\n40 |     fn get(&self, ) -> Box<dyn Future<Item = File, Error = Error<serde_json::Value>>> {\n   |                                              ^^^^ not found in this scope\n   |\nhelp: consider importing this struct\n   |\n11 | use std::fs::File;\n   |\n\nwarning: unused `#[macro_use]` import\n --> src/lib.rs:1:1\n  |\n1 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` on by default\n\nerror: aborting due to 2 previous errors; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0412`.\nerror: could not compile `openapi`\n\nTo learn more, run the command again with --verbose.\n```",
+        "version": "1.0.0"
+    },
+    "tags": [],
+    "paths": {
+        "/thing": {
+            "get": {
+                "operationId": "get",
+                "responses": {
+                    "200": {
+                        "description": "get a thing",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/File"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "File": {
+                "type": "object",
+                "properties": {}
+            }
+        }
+    }
+}
